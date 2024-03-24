@@ -1,6 +1,7 @@
 |符號|意義|系統|
 |---|---| --|
 |ipconfig| 網卡IP| WIN|
+|shutdown/s|關機|WIN|
 |ifconfig|網卡IP|linux|
 |cat index.php|複製檔案|linux|
 |;|直接執行後面|linux|
