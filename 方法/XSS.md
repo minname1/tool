@@ -180,21 +180,25 @@ stripslashes(string)函数删除字符串中的反斜杠。
 
 1在界面输入经典payload，发现name框对输入长度有限制，因此将payload转而输入message框，发现可以成功注入。
 
+![image](https://github.com/minname1/tool/assets/153788696/4d69da1d-149c-4de1-aaa1-926d676e9f38)
 
 
 2
 
 （1）修改name框的最大长度，让经典payload在name框也可以发挥作用。在网页web工具栏中 直接找到name输入框的属性设置，修改maxlength = “100”。
+![image](https://github.com/minname1/tool/assets/153788696/f7059012-15ad-4a22-8ff7-c52a67bbfbf4)
 
 
 
  （2）直接在name框输入经典payload，发现对长度已经没有限制。
 
 
+![image](https://github.com/minname1/tool/assets/153788696/cbc48f51-34e6-4f60-b982-a444400b710a)
 
 （3）随便输入message的值，回显成功注入。
 
 
+![image](https://github.com/minname1/tool/assets/153788696/42173acb-e3b7-409a-bdd6-511fa603d75f)
 
 # Medium
  页面源代码
@@ -276,6 +280,7 @@ if( isset( $_POST[ 'btnSign' ] ) ) {
  
 ?> 
 可以看到服务器端没有任何php代码，因此查看前端源代码，处理用户输入的只有前端的js代码。
+![image](https://github.com/minname1/tool/assets/153788696/10a7b4de-efef-47fd-82b0-fa533a1764c7)
 
 
 
@@ -307,6 +312,7 @@ if ( array_key_exists( "default", $_GET ) && !is_null ($_GET[ 'default' ]) ) {
 ``` 
 注入成功：
 
+![image](https://github.com/minname1/tool/assets/153788696/3e27b522-d3a5-41df-9534-1b7808849831)
 
 
  额外的绕过方式：
