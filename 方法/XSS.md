@@ -47,6 +47,7 @@ DOM的全称为Document Object Model，即文档对象模型，DOM通常用于�
 （1）直接输入最简单的payload：<script>alert(/xss/)</script>测试是否存在XSS漏洞，大多数XSS漏洞可以利用该种方法检测。
 ```
 <script>alert(/xss/)</script>
+alert()，confirm()，prompt()
 ```
 
 ![image](https://github.com/minname1/tool/assets/153788696/9ed95436-35ad-4f18-8a6f-90d2accec68d)
@@ -121,6 +122,7 @@ script标签失效，但是可以通过img、body等标签的事件或者iframe�
 1.采用img标签转换后的XSS payload：
 ``` 
 <img src = 1 onerror = alert(/xss/)>
+
 ``` 
 其他编码形式：
 ``` 
