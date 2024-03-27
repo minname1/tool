@@ -7,4 +7,4 @@
 |--data|通過 POST 送出的資料字串 |--data="id=1&Submit=Submit" |
 |-D|直接連線至資料庫|-D dvwa|
 |--dbs|列舉資料庫名稱|--dbs|
-|--durp|資料庫表格內容|--durp|
+|--dump|資料庫表格內容|--dump|
